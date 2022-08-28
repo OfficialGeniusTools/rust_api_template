@@ -9,7 +9,7 @@ use std::option::Option;
 
 #[derive(Serialize, Queryable, Debug, Clone)]
 pub struct Post {
-    pub id: i32,
+    pub id: i64,
     pub title: String,
     pub body: String,
     pub published: bool,
@@ -30,7 +30,7 @@ impl Post {
         all_posts.order(posts::id.desc()).load::<Post>(conn).unwrap()
     }
 
-    pub fn get(id: i32, conn: &PgConnection) -> Option<Post> {
+    pub fn get(id: i64, conn: &PgConnection) -> Option<Post> {
         all_posts.find(id).get_result::<Post>(conn).optional().unwrap()
     }
 
@@ -41,11 +41,11 @@ impl Post {
             .is_ok()
     }
 
-    pub fn delete(conn: &PgConnection, id: i32) -> bool {
+    pub fn delete(conn: &PgConnection, id: i64) -> bool {
         diesel::delete(posts::table.find(id)).execute(conn).is_ok()
     }
 
-    pub fn update(conn: &PgConnection, id: i32, new_post: &NewPost) -> bool {
+    pub fn update(conn: &PgConnection, id: i64, new_post: &NewPost) -> bool {
         diesel::update(posts::table.find(id))
             .set(new_post)
             .execute(conn).unwrap_or(0) > 0
